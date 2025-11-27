@@ -70,8 +70,10 @@ def configure_attention(pipe: ZImagePipeline, backend: str) -> None:
 def load_pipeline(args, device: str, dtype: torch.dtype) -> ZImagePipeline:
     load_kwargs = {"low_cpu_mem_usage": False}
     params = inspect.signature(ZImagePipeline.from_pretrained).parameters
-    dtype_arg = "dtype" if "dtype" in params else "torch_dtype"
-    load_kwargs[dtype_arg] = dtype
+    if "torch_dtype" in params:
+        load_kwargs["torch_dtype"] = dtype
+    elif "dtype" in params:
+        load_kwargs["dtype"] = dtype
 
     pipe = ZImagePipeline.from_pretrained("Tongyi-MAI/Z-Image-Turbo", **load_kwargs)
 
@@ -111,7 +113,7 @@ def run_generation(args) -> None:
     guidance = args.guidance_scale
 
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    output_dir = args.outdir or "output"
+    output_dir = os.path.expanduser(args.outdir or "output")
     os.makedirs(output_dir, exist_ok=True)
 
     num_images = max(1, args.num_images)
@@ -145,9 +147,18 @@ def run_generation(args) -> None:
         suffix = f"-{image_index + 1}" if num_images > 1 else ""
 
         if args.output:
-            base, ext = os.path.splitext(args.output)
-            ext = ext or ".png"
-            filename = f"{base}{suffix}{ext}" if suffix else f"{base}{ext}"
+            user_output = os.path.expanduser(args.output)
+            if user_output.endswith(os.sep) or os.path.isdir(user_output):
+                os.makedirs(user_output, exist_ok=True)
+                filename = os.path.join(
+                    user_output, f"z-image-{timestamp}{suffix}.png"
+                )
+            else:
+                base, ext = os.path.splitext(user_output)
+                ext = ext or ".png"
+                dirpath = os.path.dirname(base) or "."
+                os.makedirs(dirpath, exist_ok=True)
+                filename = f"{base}{suffix}{ext}" if suffix else f"{base}{ext}"
         else:
             filename = os.path.join(output_dir, f"z-image-{timestamp}{suffix}.png")
         image.save(filename)
