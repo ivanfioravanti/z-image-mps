@@ -5,7 +5,7 @@ Generate images locally with **Tongyi-MAI/Z-Image-Turbo** using a tiny CLI that 
 ## Highlights
 - Auto device pick: prefers MPS (bfloat16), then CUDA (bfloat16), else CPU (float32)
 - Sensible defaults for Z-Image-Turbo (9 steps, CFG 0.0)
-- Aspect presets plus manual height/width overrides
+- Aspect presets (multiples of 16) plus manual height/width overrides
 - Optional `torch.compile`, FlashAttention 2/3 switches, and CPU offload (CUDA)
 - `uv`-first: run without installing, or install/edit via `uv pip install -e .`
 
