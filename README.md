@@ -3,7 +3,7 @@
 Generate images locally with **Tongyi-MAI/Z-Image-Turbo** using a tiny CLI that works on Apple Silicon (MPS), CUDA, or CPU. The project mirrors the `qwen-image-mps` workflow but uses the new Z-Image Diffusers pipeline.
 
 ## Highlights
-- Auto device pick: prefers MPS, then CUDA, else CPU
+- Auto device pick: prefers MPS (bfloat16), then CUDA (bfloat16), else CPU (float32)
 - Sensible defaults for Z-Image-Turbo (9 steps, CFG 0.0)
 - Aspect presets plus manual height/width overrides
 - Optional `torch.compile`, FlashAttention 2/3 switches, and CPU offload (CUDA)
@@ -65,6 +65,8 @@ Notes:
 - Guidance should stay at `0.0` for the Turbo checkpoint.
 - FlashAttention requires compatible hardware/drivers; the CLI falls back to SDPA if it fails.
 - `torch.compile` speeds up repeated runs but makes the first call slower.
+- `-o/--output` can point to a file or a directory (including `~/...`); directories are created automatically.
+- The loader prefers `torch_dtype`/`dtype` based on your diffusers version to avoid deprecation warnings.
 
 ## Examples
 
