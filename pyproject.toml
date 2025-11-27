@@ -1,0 +1,30 @@
+[project]
+name = "z-image-mps"
+version = "0.1.0"
+description = "Generate images with Tongyi-MAI Z-Image Turbo on Apple Silicon (MPS), CUDA, or CPU."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Ivan Fioravanti" }]
+dependencies = [
+    "accelerate>=0.33.0",
+    "diffusers @ git+https://github.com/huggingface/diffusers",
+    "gradio>=4.44.0",
+    "safetensors>=0.4.0",
+    "torch>=2.3.0",
+    "transformers>=4.44.0",
+]
+
+[project.scripts]
+z-image-mps = "z_image_mps.cli:main"
+z-image-mps-gradio = "z_image_mps.gradio_app:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.uv]
+package = true
