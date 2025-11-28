@@ -18,6 +18,7 @@ dependencies = [
 [project.scripts]
 z-image-mps = "z_image_mps.cli:main"
 z-image-mps-gradio = "z_image_mps.gradio_app:main"
+z-image-mlx = "z_image_mps.mlx_cli:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -28,3 +29,9 @@ allow-direct-references = true
 
 [tool.uv]
 package = true
+
+[project.optional-dependencies]
+mlx = [
+    "mlx>=0.13.0",
+    "mlx-diffusers>=0.1.0",
+]

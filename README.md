@@ -1,6 +1,6 @@
 # Z-Image MPS
 
-Generate images locally with **Tongyi-MAI/Z-Image-Turbo** using a tiny CLI that works on Apple Silicon (MPS), CUDA, or CPU. The project mirrors the `qwen-image-mps` workflow but uses the new Z-Image Diffusers pipeline.
+Generate images locally with **Tongyi-MAI/Z-Image-Turbo** using a tiny CLI that works on Apple Silicon (MPS/MLX), CUDA, or CPU. The project mirrors the `qwen-image-mps` workflow but uses the new Z-Image Diffusers pipeline. A native MLX entrypoint is available for Apple Silicon users who want to skip PyTorch entirely.
 
 ## Highlights
 - Auto device pick: prefers MPS (bfloat16), then CUDA (bfloat16), else CPU (float32)
@@ -8,6 +8,7 @@ Generate images locally with **Tongyi-MAI/Z-Image-Turbo** using a tiny CLI that 
 - Aspect presets (multiples of 16) plus manual height/width overrides
 - Optional `torch.compile`, FlashAttention 2/3 switches, and CPU offload (CUDA)
 - `uv`-first: run without installing, or install/edit via `uv pip install -e .`
+- Native Apple MLX support via `z-image-mlx` (no PyTorch required)
 
 ## Quick start
 
@@ -26,6 +27,17 @@ Or install locally in editable mode:
 uv pip install -e .
 z-image-mps --prompt "Sunlit living room, mid-century modern, natural light"
 ```
+
+### MLX variant (Apple Silicon)
+
+Install the MLX extras and use the dedicated entrypoint. This bypasses PyTorch/MPS and runs everything through Apple's MLX runtime:
+
+```bash
+uv pip install -e .[mlx]
+z-image-mlx --prompt "Sunlit living room, mid-century modern, natural light"
+```
+
+The MLX build expects an MLX-converted checkpoint (the CLI defaults to `Tongyi-MAI/Z-Image-Turbo-mlx`). You can point to a custom MLX repo with `MLX_MODEL_ID` if you have a different conversion.
 
 Images are saved to `output/` by default with timestamped filenames.
 
